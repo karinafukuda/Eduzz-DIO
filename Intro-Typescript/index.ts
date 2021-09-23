@@ -1,4 +1,34 @@
-console.log('frase teste');
+import $ from 'jquery';
+
+$.fn.extend({
+ novaFuncao() {
+  console.log('chamou a funcao');
+ }
+});
+
+$('body').novaFuncao();
+
+//Omit
+
+interface IPessoa {
+ nome: string;
+ idade: number;
+ nacionalidade: string;
+}
+
+interface Brasileiro extends Omit<IPessoa, 'nacionalidade'>{
+
+}
+
+const brasileiro: Brasileiro = {
+ nome: 'Karina',
+ idade: 32
+} 
+
+console.log(brasileiro);
+
+
+
 //tipagem 
 function soma(a: number , b: number){
  return a + b;
@@ -40,4 +70,72 @@ type IDomestico = IFelino | ICanino;
   console.log(i.value);
  });
 
- //Generic Types
+ //Generic Types <T> 
+
+function adicionaApendiceALista <T>( array: any[], value: T){
+ return array.map( item => item + value);
+}
+
+adicionaApendiceALista([1, 2, 3], 4);
+
+//Condicionais com parâmetros
+
+interface IUsuario {
+ id: string;
+ email: string;
+}
+
+interface IAdmin extends IUsuario {
+ cargo: 'gerente' | 'coordenador' | 'supervisor';
+}
+
+function redirecione(usuario: IUsuario | IAdmin){
+ if ('cargo' in usuario){
+  return console.log('Admin');
+ }else{
+  return console.log('User');
+ }
+}
+
+// Caractere ? (Opcional)
+
+interface IUser {
+ id: string;
+ email: string;
+ cargo ?: 'gerente' | 'coordenador' | 'supervisor' | 'funcionario';
+}
+
+function redirecionar(usuario: IUser){
+ if (usuario.cargo){
+  //redirecionar(usuario.cargo)
+ }else{
+  //não redirecionar
+ }
+}
+
+//Readonly e Private
+
+interface IAnimalDomestico {
+ nome: string;
+ idade: number;
+ parqueFavorito ?: string;
+}
+
+type PetSomenteLeitura = {
+ readonly [ K in keyof IAnimalDomestico]: IAnimalDomestico[K];
+ // +readonly [ K in keyof IAnimalDomestico]-?: IAnimalDomestico[K]; removendo a opção adicional
+}
+
+// class MeuPet implements IAnimalDomestico {
+//  idade;
+//  nome;
+
+//  constructor(nome, idade)
+//  {
+//   this.nome = nome;
+//   this.idade = idade;
+//  }
+// }
+// const meuPet = new MeuPet ( 'Canelinha', 3);
+
+
